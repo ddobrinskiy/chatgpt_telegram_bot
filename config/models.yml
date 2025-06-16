@@ -93,9 +93,22 @@ info:
       Fast: 2
       Cheap: 3
 
+  dalle-2:
+     type: image
+     name: DALL-E 2
+     description: DALL-E 2 — предыдущая версия модели генерации изображений с поддержкой меньших размеров.
+     price_per_1_image: 0.018  # 512x512
+     supported_sizes: ["256x256", "512x512", "1024x1024"]
+     max_images_per_request: 10
+
   dalle-3:
      type: image
-     price_per_1_image: 0.018  # 512x512
+     name: DALL-E 3
+     description: DALL-E 3 — самая продвинутая модель генерации изображений от OpenAI с улучшенным качеством и точностью следования промптам.
+     price_per_1_image: 0.040  # standard quality 1024x1024
+     supported_sizes: ["1024x1024", "1024x1792", "1792x1024"]
+     supported_qualities: ["standard", "hd"]
+     max_images_per_request: 1
 
   whisper:
     type: audio

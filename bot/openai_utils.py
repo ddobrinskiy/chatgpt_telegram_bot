@@ -20,7 +20,7 @@ OPENAI_COMPLETION_OPTIONS = {
     "top_p": 1,
     "frequency_penalty": 0,
     "presence_penalty": 0,
-    "request_timeout": 60.0,
+    "request_timeout": 600.0,  # 10 minutes for slower operations
 }
 
 
@@ -325,8 +325,34 @@ async def transcribe_audio(audio_file) -> str:
     return r["text"] or ""
 
 
-async def generate_images(prompt, n_images=4, size="512x512"):
-    r = await openai.Image.acreate(prompt=prompt, n=n_images, size=size)
+async def generate_images(prompt, n_images=4, size="1024x1024", model=config.default_image_model):
+    # Validate n_images against model's maximum
+    if model in config.models["info"]:
+        max_images = config.models["info"][model].get("max_images_per_request", 1)
+        if n_images > max_images:
+            logger.warning(f"{model} can only generate {max_images} image(s) at a time. Requested {n_images}, generating {max_images}.")
+            n_images = max_images
+    
+    # Validate size parameter against model's supported sizes
+    if model in config.models["info"]:
+        supported_sizes = config.models["info"][model].get("supported_sizes", [])
+        if size and size not in supported_sizes:
+            # Use the first supported size as default if invalid size provided
+            size = supported_sizes[0] if supported_sizes else "1024x1024"
+            logger.warning(f"Invalid size {size} for model {model}. Using {supported_sizes[0]} instead. Supported sizes: {supported_sizes}")
+    
+    # Use config default size if no size specified
+    if not size:
+        size = config.image_size
+
+    # Longer timeout for image generation
+    r = await openai.Image.acreate(
+        prompt=prompt, 
+        n=n_images, 
+        size=size, 
+        model=model,
+        request_timeout=900.0  # 15 minutes for image generation
+    )
     image_urls = [item.url for item in r.data]
     return image_urls
 
