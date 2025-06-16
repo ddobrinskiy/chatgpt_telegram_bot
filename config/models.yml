@@ -5,23 +5,23 @@ info:
   gpt-4o:
     type: chat_completion
     name: GPT-4o
-    description: GPT-4o is a special variant of GPT-4 designed for optimal performance and accuracy. Suitable for complex and detailed tasks.
+    description: GPT-4o — это самая продвинутая модель от OpenAI. Подходит как для сложных и детальных задач, так и для повседневных вопросов.
 
-    price_per_1000_input_tokens: 0.03
-    price_per_1000_output_tokens: 0.06
+    price_per_1000_input_tokens: 0.0025
+    price_per_1000_output_tokens: 0.010
 
     scores:
       smart: 5
-      fast: 2
-      cheap: 2
+      fast: 5
+      cheap: 5
 
   gpt-3.5-turbo:
     type: chat_completion
     name: ChatGPT
     description: ChatGPT is that well-known model. It's <b>fast</b> and <b>cheap</b>. Ideal for everyday tasks. If there are some tasks it can't handle, try the <b>GPT-4</b>.
 
-    price_per_1000_input_tokens: 0.0015
-    price_per_1000_output_tokens: 0.002
+    price_per_1000_input_tokens: 0.0025
+    price_per_1000_output_tokens: 0.010
 
     scores:
       Smart: 3
@@ -46,8 +46,8 @@ info:
     name: GPT-4
     description: GPT-4 is the <b>smartest</b> and most advanced model in the world. But it is slower and not as cost-efficient as ChatGPT. Best choice for <b>complex</b> intellectual tasks.
 
-    price_per_1000_input_tokens: 0.03
-    price_per_1000_output_tokens: 0.06
+    price_per_1000_input_tokens: 0.0025
+    price_per_1000_output_tokens: 0.01
 
     scores:
       Smart: 5
@@ -93,7 +93,7 @@ info:
       Fast: 2
       Cheap: 3
 
-  dalle-2:
+  dalle-3:
      type: image
      price_per_1_image: 0.018  # 512x512
 

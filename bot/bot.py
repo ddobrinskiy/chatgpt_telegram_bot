@@ -40,12 +40,12 @@ logger = logging.getLogger(__name__)
 user_semaphores = {}
 user_tasks = {}
 
+# ⚪ /balance – Показать баланс
 HELP_MESSAGE = """Commands:
 ⚪ /retry – Повторно сгенерировать последний ответ бота
 ⚪ /new – Начать новый диалог
 ⚪ /mode – Выбрать режим чата
 ⚪ /settings – Показать настройки
-⚪ /balance – Показать баланс
 ⚪ /help – Показать помощь
 
 🎨 Генерация изображений из текстовых подсказок в <b>👩‍🎨 Artist</b> /mode
@@ -88,7 +88,7 @@ async def register_user_if_not_exists(update: Update, context: CallbackContext, 
         user_semaphores[user.id] = asyncio.Semaphore(1)
 
     if db.get_user_attribute(user.id, "current_model") is None:
-        db.set_user_attribute(user.id, "current_model", config.models["available_text_models"][0])
+        db.set_user_attribute(user.id, "current_model", config.default_model)
 
     # back compatibility for n_used_tokens field
     n_used_tokens = db.get_user_attribute(user.id, "n_used_tokens")
@@ -465,8 +465,8 @@ async def message_handle(update: Update, context: CallbackContext, message=None,
             # What is this? ^^^
 
             if current_model != "gpt-4o" and current_model != "gpt-4-vision-preview":
-                current_model = "gpt-4o"
-                db.set_user_attribute(user_id, "current_model", "gpt-4o")
+                current_model = config.default_model
+                db.set_user_attribute(user_id, "current_model", config.default_model)
             task = asyncio.create_task(
                 _vision_message_handle_fn(update, context, use_new_dialog_timeout=use_new_dialog_timeout)
             )
@@ -566,7 +566,7 @@ async def new_dialog_handle(update: Update, context: CallbackContext):
 
     user_id = update.message.from_user.id
     db.set_user_attribute(user_id, "last_interaction", datetime.now())
-    db.set_user_attribute(user_id, "current_model", "gpt-4o")
+    db.set_user_attribute(user_id, "current_model", config.default_model)
 
     db.start_new_dialog(user_id)
     await update.message.reply_text("Начинаю новый чат ✅")
@@ -759,9 +759,9 @@ async def show_balance_handle(update: Update, context: CallbackContext):
         details_text += f"- {model_key}: <b>{n_input_spent_dollars + n_output_spent_dollars:.03f}$</b> / <b>{n_input_tokens + n_output_tokens} токенов</b>\n"
 
     # image generation
-    image_generation_n_spent_dollars = config.models["info"]["dalle-2"]["price_per_1_image"] * n_generated_images
+    image_generation_n_spent_dollars = config.models["info"]["dalle-3"]["price_per_1_image"] * n_generated_images
     if n_generated_images != 0:
-        details_text += f"- DALL·E 2 (генерация изображений): <b>{image_generation_n_spent_dollars:.03f}$</b> / <b>{n_generated_images} сгенерированных изображений</b>\n"
+        details_text += f"- DALL·E 3 (генерация изображений): <b>{image_generation_n_spent_dollars:.03f}$</b> / <b>{n_generated_images} сгенерированных изображений</b>\n"
 
     total_n_spent_dollars += image_generation_n_spent_dollars
 
