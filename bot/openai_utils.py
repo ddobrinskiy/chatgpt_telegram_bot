@@ -351,7 +351,6 @@ async def generate_images(prompt, n_images=4, size="1024x1024", model=config.def
         n=n_images, 
         size=size, 
         model=model,
-        request_timeout=900.0  # 15 minutes for image generation
     )
     image_urls = [item.url for item in r.data]
     return image_urls
